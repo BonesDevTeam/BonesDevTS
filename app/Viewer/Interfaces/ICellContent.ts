@@ -1,0 +1,3 @@
+interface ICellConten {
+    skinName: string
+}
