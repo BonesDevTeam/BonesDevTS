@@ -1,3 +1,5 @@
+import { xyObject } from "../../Global/Types.js";
+import IGameState from "../Interfaces/IGameState.js";
 import Cell from "./Cell.js";
 
 export default class GameState implements IGameState{
@@ -36,5 +38,12 @@ export default class GameState implements IGameState{
 
     get background(): string {
         return this.__background
+    }
+
+    get cellsCount(): xyObject {
+        return {
+            x: this.__width,
+            y: this.__height
+        }
     }
 }
