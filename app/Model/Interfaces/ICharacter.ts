@@ -1,3 +1,0 @@
-interface ICharacter {
-    skinName: string;
-}

@@ -1,0 +1,23 @@
+{
+    "type": "map",
+    "environment": "Ship",
+    "width": 30,
+    "height": 20,
+    "content": {},
+    "players": [
+        {
+            "skinName": "gunnerDefault",
+            "position": {
+                "x": "1",
+                "y": "1"
+            }
+        },
+        {
+            "skinName": "gunnerDefault",
+            "position": {
+                "x": "2",
+                "y": "5"
+            }
+        }
+    ]
+}

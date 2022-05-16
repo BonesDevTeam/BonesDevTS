@@ -1,3 +1,6 @@
+import ICharacter from "../../Characters/Interfaces/ICharacter.js";
+import ICell from "../Interfaces/ICell.js";
+
 export default class Cell implements ICell {
     private __x: number;
     private __y: number;
@@ -10,12 +13,12 @@ export default class Cell implements ICell {
         this.__content = [];
     }
 
-    static tranformCoordinatesToId(x:number, y: number): string {
+    static tranformCoordinatesToId(x: number, y: number): string {
         return `${x},${y}`;
     }
 
     get id(): string {
-        return Cell.tranformCoordinatesToId(this.__x, this.__y)
+        return Cell.tranformCoordinatesToId(this.__x, this.__y);
     }
 
     get character(): ICharacter | null {

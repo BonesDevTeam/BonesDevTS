@@ -1,9 +1,8 @@
-import IGameState from "../../Model/Interfaces/IGameState";
-import IAnimationSprite from "../Interfaces/IAnimationSprite";
-import ICachedImages from "../Interfaces/ICachedImages";
-import IMapGrid from "../Interfaces/IMapGrid";
+import IGameState from "../../Model/GameState/Interfaces/IGameState.js";
+import IAnimationSprite from "../Interfaces/IAnimationSprite.js";
+import ICachedImages from "../Interfaces/ICachedImages.js";
+import IMapGrid from "../Interfaces/IMapGrid.js";
 import AnimationSprite from "./AnimationSprite.js";
-import CachedImages from "./CachedImages";
 import MapGrid from "./MapGrid.js";
 
 export default class DrawCanvas {
@@ -13,7 +12,6 @@ export default class DrawCanvas {
     private static virtualCanvas: HTMLCanvasElement =
         document.createElement("canvas");
     private static div: HTMLDivElement;
-    private static size: number = 0;
     private static time: number = 0;
     private static mapGrid: IMapGrid;
     private static cachedImages: ICachedImages;
@@ -22,7 +20,7 @@ export default class DrawCanvas {
         gameState: IGameState,
         cachedImages: ICachedImages
     ): void {
-        DrawCanvas.cachedImages = cachedImages
+        DrawCanvas.cachedImages = cachedImages;
         DrawCanvas.canvas = <HTMLCanvasElement>(
             document.getElementById("canvas")
         );
@@ -35,13 +33,13 @@ export default class DrawCanvas {
         DrawCanvas.mapGrid = new MapGrid(
             gameState,
             { x: 0, y: 0 },
-            { x: 0, y: 0 },
+            { x: 600, y: 400 },
+            { x: 2400, y: 1600 },
             DrawCanvas.canvas,
             gameState.cellsCount
         );
 
         function click(e: MouseEvent) {
-            console.log(DrawCanvas.mapGrid.getCell(e.offsetX, e.offsetY));
             DrawCanvas.addAnimationSprite(
                 new AnimationSprite(
                     "rocket",
@@ -119,12 +117,10 @@ export default class DrawCanvas {
         ctx.strokeStyle = "red";
         ctx.lineWidth = 1;
         DrawCanvas.clearMap(gameState.background);
-        DrawCanvas.mapGrid.cellSize = Math.min(
-            Math.floor(DrawCanvas.canvas.width / nx),
-            Math.floor(DrawCanvas.canvas.height / ny)
+        const mapCanvas = DrawCanvas.mapGrid.getMapCanvas(
+            DrawCanvas.canvas,
+            DrawCanvas.cachedImages
         );
-
-        const mapCanvas = DrawCanvas.mapGrid.getMapCanvas(DrawCanvas.canvas, DrawCanvas.cachedImages);
         ctx.drawImage(mapCanvas, 0, 0);
         console.log("drowed");
     }
@@ -157,14 +153,8 @@ export default class DrawCanvas {
                 }, 0);
                 return;
             }
-            const img = DrawCanvas.cachedImages.getImage(sprite.imgName)
-            ctx.drawImage(
-                img,
-                sprite.x,
-                sprite.y,
-                sprite.width,
-                sprite.height
-            );
+            const img = DrawCanvas.cachedImages.getImage(sprite.imgName);
+            ctx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height);
         });
         ctx = <CanvasRenderingContext2D>(
             DrawCanvas.canvasAnimation.getContext("2d")

@@ -5,8 +5,12 @@ import ICachedImages from "./ICachedImages";
 export default interface IMapGrid {
     srartCell: XYObject;
     startPixel: XYObject;
+    finishPixel: XYObject;
     cellSize: number;
     cellToShowCount: XYObject;
-    getMapCanvas: (canvasSize: SizedObject, cachedImages: ICachedImages) => HTMLCanvasElement;
+    getMapCanvas: (
+        canvasSize: SizedObject,
+        cachedImages: ICachedImages
+    ) => HTMLCanvasElement;
     getCell: (xCoord: number, yCoord: number) => XYObject;
 }

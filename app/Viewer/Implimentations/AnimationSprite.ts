@@ -40,8 +40,11 @@ export default class AnimationSprite implements IAnimationSprite {
     public resize(time: Number): void {}
 
     public getVelocity(deltaTime: number): velocity {
-        const g: number = 0.00001
-        this.__velocity = {x: this.__velocity.x, y: this.__velocity.y + deltaTime*g}
+        const g: number = 0.00001;
+        this.__velocity = {
+            x: this.__velocity.x,
+            y: this.__velocity.y + deltaTime * g,
+        };
         return this.__velocity;
     }
 
