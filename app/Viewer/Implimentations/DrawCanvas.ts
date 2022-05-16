@@ -122,7 +122,6 @@ export default class DrawCanvas {
             DrawCanvas.cachedImages
         );
         ctx.drawImage(mapCanvas, 0, 0);
-        console.log("drowed");
     }
 
     static img: HTMLImageElement | null = null;

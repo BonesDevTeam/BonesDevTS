@@ -1,14 +1,23 @@
+import FileManager from "../Global/FileManager.js";
 import GameState from "../Model/GameState/Implimentations/GameState.js";
 import IGameState from "../Model/GameState/Interfaces/IGameState.js";
+import ICachedImages from "../Viewer/Interfaces/ICachedImages.js";
 import ISave from "./Interfaces/ISave.js";
 
 export default class StartGame {
-    static async start(map: string): Promise<IGameState> {
+    static async start(
+        mapName: string,
+        cachedImages: ICachedImages
+    ): Promise<IGameState> {
         return new Promise<IGameState>(async (resolve, reject) => {
-            const response: Response = await fetch(
-                "../../assets/Maps/EmptyMap.json"
+            await cachedImages.addImage(
+                "gunnerDefault",
+                "Characters/images/player/gunnerDefault.png"
             );
-            const map: ISave = await response.json();
+            await cachedImages.addImage("rocket", "rocket.png");
+            cachedImages.addURL("Ship", "Ship.png");
+            const map: ISave = await FileManager.get(`../../assets/Maps/${mapName}.json`)
+
             const gameState: IGameState = new GameState(
                 map.width,
                 map.height,

@@ -6,13 +6,7 @@ import ICachedImages from "./app/Viewer/Interfaces/ICachedImages.js";
 
 window.addEventListener("load", async () => {
     const cachedImages: ICachedImages = new CachedImages();
-    await cachedImages.addImage(
-        "gunnerDefault",
-        "./assets/Characters/images/player/gunnerDefault.png"
-    );
-    await cachedImages.addImage("rocket", "../../../assets/rocket.png");
-    await cachedImages.addURL("Ship", "../../../assets/Ship.png");
-    const gameState: IGameState = await StartGame.start("EmptyMap");
+    const gameState: IGameState = await StartGame.start("EmptyMap", cachedImages);
     const div: HTMLDivElement = <HTMLDivElement>(
         document.getElementById("fieldWrapper")
     );
@@ -21,6 +15,11 @@ window.addEventListener("load", async () => {
     )}')`;
     DrawCanvas.init(gameState, cachedImages);
     window.requestAnimationFrame(
-        DrawCanvas.upddateCanvas.bind(null, gameState, gameState.cellsCount.x, gameState.cellsCount.y)
+        DrawCanvas.upddateCanvas.bind(
+            null,
+            gameState,
+            gameState.cellsCount.x,
+            gameState.cellsCount.y
+        )
     );
 });

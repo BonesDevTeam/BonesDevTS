@@ -30,8 +30,6 @@ export default class MapGrid implements IMapGrid {
                 (this.finishPixel.y - this.startPixel.y) / cellToShowCount.y
             )
         );
-        console.log(this.cellSize);
-
         this.cellToShowCount = cellToShowCount;
     }
     public getCell(xCoord: number, yCoord: number): XYObject {
@@ -54,8 +52,6 @@ export default class MapGrid implements IMapGrid {
         const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
         ctx.strokeStyle = "red";
         ctx.lineWidth = 1;
-        // this.cellSize = Math.floor()
-
         for (let i = 0; i < nx; i++) {
             for (let k = 0; k < ny; k++) {
                 ctx.strokeRect(
@@ -73,7 +69,6 @@ export default class MapGrid implements IMapGrid {
                     skins.forEach((skinName) => {
                         const img: HTMLImageElement =
                             cachedImages.getImage(skinName);
-                        console.dir(img);
                         ctx.drawImage(
                             img,
                             Math.floor(
