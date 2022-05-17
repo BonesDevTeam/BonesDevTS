@@ -1,17 +1,7 @@
 {
-  "cabinBoy": {
-    "name": "cabinBoy"
-  },
-  "cartographer": {
-    "name": "cartographerDefault"
-  },
-  "gunner":{
-    "name": "gunnerDefault"
-  },
-  "cook":{
-    "name": "cookDefault"
-  },
-  "fireMan":{
-    "name": "fireManDefault"
+  "Gunner": {
+    "full": {
+      "name": "gunnerDefault"
+    }
   }
 }

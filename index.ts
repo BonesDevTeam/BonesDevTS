@@ -6,7 +6,10 @@ import ICachedImages from "./app/Viewer/Interfaces/ICachedImages.js";
 
 window.addEventListener("load", async () => {
     const cachedImages: ICachedImages = new CachedImages();
-    const gameState: IGameState = await StartGame.start("EmptyMap", cachedImages);
+    const gameState: IGameState = await StartGame.start(
+        "EmptyMap",
+        cachedImages
+    );
     const div: HTMLDivElement = <HTMLDivElement>(
         document.getElementById("fieldWrapper")
     );
@@ -22,4 +25,5 @@ window.addEventListener("load", async () => {
             gameState.cellsCount.y
         )
     );
+    console.log(gameState);
 });

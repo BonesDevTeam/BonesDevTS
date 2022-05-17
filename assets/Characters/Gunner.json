@@ -1,0 +1,29 @@
+{
+  "className": "Player",
+  "name": "Gunner",
+  "movementPointsValues": {
+    "min": 12,
+    "max": 18
+  },
+  "MaxHpBodyPart": {
+    "head": 1,
+    "body": 3,
+    "arms": 2,
+    "legs": 2
+  },
+  "defListInit": {
+    "head": 1,
+    "body": 3,
+    "arms": 2,
+    "legs": 2
+  },
+  "initInventory": [
+    "RazeGun"
+  ],
+  "pointsToDoActionInit": 0,
+  "pointsToMoveInit": 2,
+  "maxInventorySize": 4,
+  "lives": 3,
+  "cooldownKey": 0,
+  "maxCooldownKey": 5
+}

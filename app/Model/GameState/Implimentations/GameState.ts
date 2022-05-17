@@ -1,5 +1,5 @@
 import { XYObject } from "../../../Global/Types.js";
-import ICharacter from "../../Characters/Interfaces/ICharacter.js";
+import ICharacterGame from "../../Characters/Interfaces/ICharacterGame.js";
 import ICell from "../Interfaces/ICell.js";
 import IGameState from "../Interfaces/IGameState.js";
 import Cell from "./Cell.js";
@@ -33,10 +33,10 @@ export default class GameState implements IGameState {
         return this.__cells[id].skinsName;
     }
 
-    moveCharacter(character: ICharacter, x: number, y: number): void {
+    moveCharacter(character: ICharacterGame, x: number, y: number): void {
         const id: string = Cell.tranformCoordinatesToId(x, y);
         this.__cells[id].character = character;
-        character.position = { x, y };
+        character.setPosition({ x, y });
     }
 
     get background(): string {

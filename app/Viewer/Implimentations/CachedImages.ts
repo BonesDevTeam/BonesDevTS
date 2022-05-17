@@ -3,7 +3,7 @@ import ICachedImages from "../Interfaces/ICachedImages";
 export default class CachedImages implements ICachedImages {
     private __images: { [id: string]: HTMLImageElement };
     private __urls: { [id: string]: string };
-    private static preStr: string = "./assets/"
+    private static preStr: string = "./assets/";
     constructor() {
         this.__images = {};
         this.__urls = {};
@@ -11,6 +11,9 @@ export default class CachedImages implements ICachedImages {
 
     public async addImage(id: string, src: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
+            if (this.__images[id]) {
+                resolve();
+            }
             const img: HTMLImageElement = new Image();
             img.src = `${CachedImages.preStr}${src}`;
             img.onload = () => {
