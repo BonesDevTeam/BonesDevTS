@@ -40,14 +40,19 @@ export default class DrawCanvas {
         );
 
         function click(e: MouseEvent) {
+            // DrawCanvas.addAnimationSprite(
+            //     new AnimationSprite(
+            //         cachedImages.getImage("rocket"),
+            //         150,
+            //         100,
+            //         DrawCanvas.time,
+            //         e.offsetX,
+            //         e.offsetY
+            //     )
+            // );
             DrawCanvas.addAnimationSprite(
                 new AnimationSprite(
-                    "rocket",
-                    150,
-                    100,
-                    DrawCanvas.time,
-                    e.offsetX,
-                    e.offsetY
+                    cachedImages.getImage("RumFlip"), 200,200, DrawCanvas.time, e.offsetX, e.offsetY, 7, 4
                 )
             );
         }
@@ -109,7 +114,9 @@ export default class DrawCanvas {
         nx: number,
         ny: number
     ): void {
-        if (!gameState.updating) return;
+
+        
+        if (!gameState.updating) return;       
         const canvas: HTMLCanvasElement = DrawCanvas.canvas;
         const ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
             canvas.getContext("2d")
@@ -124,7 +131,7 @@ export default class DrawCanvas {
         ctx.drawImage(mapCanvas, 0, 0);
     }
 
-    static img: HTMLImageElement | null = null;
+
     static updateAnimation(time: number): void {
         let ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
             DrawCanvas.virtualCanvas.getContext("2d")
@@ -152,8 +159,30 @@ export default class DrawCanvas {
                 }, 0);
                 return;
             }
-            const img = DrawCanvas.cachedImages.getImage(sprite.imgName);
-            ctx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height);
+            const img: HTMLImageElement = sprite.img;          
+            ctx.drawImage(
+                img,
+                sprite.sx,
+                sprite.sy,
+                sprite.swidth,
+                sprite.sheight,
+                sprite.x,
+                sprite.y,
+                sprite.width,
+                sprite.height
+            );
+            // ctx.drawImage(
+            //     img,
+            //     0,
+            //     0,
+            //     200,
+            //     400,
+            //     sprite.x,
+            //     sprite.y,
+            //     100,
+            //     100
+            // );
+            // ctx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height);
         });
         ctx = <CanvasRenderingContext2D>(
             DrawCanvas.canvasAnimation.getContext("2d")

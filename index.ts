@@ -25,5 +25,5 @@ window.addEventListener("load", async () => {
             gameState.cellsCount.y
         )
     );
-    console.log(gameState);
+    console.log(gameState); 
 });

@@ -1,7 +1,9 @@
 import FileManager from "../Global/FileManager.js";
+import asyncForEach from "../Global/Functions.js";
 import Character from "../Model/Characters/Implimentations/Character.js";
 import ICharacterGame from "../Model/Characters/Interfaces/ICharacterGame.js";
 import ICharacterJson from "../Model/Characters/Interfaces/ICharacterJson.js";
+import ICharacterSave from "../Model/Characters/Interfaces/ICharacterSave.js";
 import GameState from "../Model/GameState/Implimentations/GameState.js";
 import IGameState from "../Model/GameState/Interfaces/IGameState.js";
 import ICachedImages from "../Viewer/Interfaces/ICachedImages.js";
@@ -13,25 +15,34 @@ export default class StartGame {
         mapName: string,
         cachedImages: ICachedImages
     ): Promise<IGameState> {
-        return new Promise<IGameState>(async (resolve, reject) => {
-            const map: ISave = await FileManager.get(
-                `../../assets/Maps/${mapName}.json`
-            );
-            const gameState: IGameState = new GameState(
-                map.width,
-                map.height,
-                map.environment
-            );
+        const map: ISave = await FileManager.get(
+            `../../assets/Maps/${mapName}.json`
+        );
+        console.log('добавление картинки');
+        
+        await cachedImages.addImage(
+            "airPoof",
+            "../../assets/Animation/AirPoof.png"
+        );
+        await cachedImages.addImage(
+            "RumFlip",
+            "../../assets/Animation/RumFlip.png"
+        );
+        
+        await cachedImages.addImage("rocket", "rocket.png");
+        console.log('добавлены картинки');
 
-            await cachedImages.addImage("rocket", "rocket.png");
-            cachedImages.addURL(
-                gameState.background,
-                `../../assets/Maps/Backgrounds/${gameState.background}.png`
-            );
-
-            StartGame.initPlayers(map, gameState, cachedImages);
-            resolve(gameState);
-        });
+        const gameState: IGameState = new GameState(
+            map.width,
+            map.height,
+            map.environment
+        );
+        cachedImages.addURL(
+            gameState.background,
+            `../../assets/Maps/Backgrounds/${gameState.background}.png`
+        );
+        await StartGame.initPlayers(map, gameState, cachedImages);
+        return gameState;
     }
 
     private static async initPlayers(
@@ -39,24 +50,27 @@ export default class StartGame {
         gameState: IGameState,
         cachedImages: ICachedImages
     ): Promise<void> {
-        map.players.forEach(async (player) => {
-            const playerBase: ICharacterJson = await FileManager.get(
-                `../../assets/Characters/${player.name}.json`
-            );
-            const playerGame: ICharacterGame = new Character(
-                player,
-                playerBase
-            );
-            const skin: ISkinJson = await FileManager.get(
-                `../../assets/Characters/Skins/${playerBase.className}.json`
-            );
-            const skinName: string =
-                skin[playerBase.name][player.skinName].name;
-            await cachedImages.addImage(
-                playerGame.skinName,
-                `Characters/images/${playerBase.className}/${skinName}.png`
-            );
-            gameState.moveCharacter(playerGame, player.x, player.y);
-        });
+        await asyncForEach<ICharacterSave>(
+            map.players,
+            async (player, i, players) => {
+                const playerBase: ICharacterJson = await FileManager.get(
+                    `../../assets/Characters/${player.name}.json`
+                );
+                const playerGame: ICharacterGame = new Character(
+                    player,
+                    playerBase
+                );
+                const skin: ISkinJson = await FileManager.get(
+                    `../../assets/Characters/Skins/${playerBase.className}.json`
+                );
+                const skinName: string =
+                    skin[playerBase.name][player.skinName].name;
+                await cachedImages.addImage(
+                    playerGame.skinName,
+                    `Characters/images/${playerBase.className}/${skinName}.png`
+                );
+                gameState.moveCharacter(playerGame, player.x, player.y);
+            }
+        );
     }
 }

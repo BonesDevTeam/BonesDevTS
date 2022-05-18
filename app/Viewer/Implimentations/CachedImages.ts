@@ -13,13 +13,14 @@ export default class CachedImages implements ICachedImages {
         return new Promise<void>((resolve, reject) => {
             if (this.__images[id]) {
                 resolve();
+            } else {
+                const img: HTMLImageElement = new Image();
+                img.src = `${CachedImages.preStr}${src}`;
+                img.onload = () => {
+                    this.__images[id] = img;
+                    resolve();
+                };
             }
-            const img: HTMLImageElement = new Image();
-            img.src = `${CachedImages.preStr}${src}`;
-            img.onload = () => {
-                this.__images[id] = img;
-                resolve();
-            };
         });
     }
 
