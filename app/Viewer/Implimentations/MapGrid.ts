@@ -45,23 +45,53 @@ export default class MapGrid implements IMapGrid {
         canvasSize: SizedObject,
         cachedImages: ICachedImages
     ): HTMLCanvasElement {
+        function drawStrockedRect(
+            x: number,
+            y: number,
+            width: number,
+            height: number,
+            strocked: boolean
+        ): void {
+            ctx.fillRect(x, y, width, height);
+            if (strocked) {
+                ctx.strokeRect(x, y, width, height);
+            }
+        }
         const { x: nx, y: ny } = this.cellToShowCount;
         const canvas: HTMLCanvasElement = document.createElement("canvas");
         canvas.width = canvasSize.width;
         canvas.height = canvasSize.height;
         const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = "rgb(90,40,40)";
         ctx.lineWidth = 1;
         for (let i = 0; i < nx; i++) {
             for (let k = 0; k < ny; k++) {
-                ctx.strokeRect(
+                if (!((i + k) % 2)) continue;
+                ctx.fillStyle = "rgb(100,60,40)";
+                drawStrockedRect(
                     i * this.cellSize + this.startPixel.x,
                     k * this.cellSize + this.startPixel.y,
                     this.cellSize,
-                    this.cellSize
+                    this.cellSize,
+                    true
                 );
             }
         }
+
+        for (let i = 0; i < nx; i++) {
+            for (let k = 0; k < ny; k++) {
+                if ((i + k) % 2) continue;
+                ctx.fillStyle = "rgb(90,55,35)";
+                drawStrockedRect(
+                    i * this.cellSize + this.startPixel.x,
+                    k * this.cellSize + this.startPixel.y,
+                    this.cellSize,
+                    this.cellSize,
+                    true
+                );
+            }
+        }
+
         for (let i = 0; i < nx; i++) {
             for (let k = 0; k < ny; k++) {
                 const skins: string[] = this.__gameState.getCellSkins(i, k);

@@ -12,7 +12,6 @@ export default class DrawCanvas {
     private static virtualCanvas: HTMLCanvasElement =
         document.createElement("canvas");
     private static div: HTMLDivElement;
-    private static time: number = 0;
     private static mapGrid: IMapGrid;
     private static cachedImages: ICachedImages;
 
@@ -45,14 +44,14 @@ export default class DrawCanvas {
             //         cachedImages.getImage("rocket"),
             //         150,
             //         100,
-            //         DrawCanvas.time,
             //         e.offsetX,
-            //         e.offsetY
+            //         e.offsetYS
             //     )
             // );
+           
             DrawCanvas.addAnimationSprite(
                 new AnimationSprite(
-                    cachedImages.getImage("RumFlip"), 200,200, DrawCanvas.time, e.offsetX, e.offsetY, 7, 4
+                    cachedImages.getImage("RumFlip"), 200,200, e.offsetX, e.offsetY, 7, 4
                 )
             );
         }
@@ -79,12 +78,10 @@ export default class DrawCanvas {
         gameState: IGameState,
         nx: number,
         ny: number,
-        time: number = 0
     ): void {
         DrawCanvas.__uddateCanvasSizes(gameState);
-        DrawCanvas.time = time;
         DrawCanvas.upddateMap(gameState, nx, ny);
-        DrawCanvas.updateAnimation(time);
+        DrawCanvas.updateAnimation()
         window.requestAnimationFrame(
             DrawCanvas.upddateCanvas.bind(null, gameState, nx, ny)
         );
@@ -114,15 +111,11 @@ export default class DrawCanvas {
         nx: number,
         ny: number
     ): void {
-
-        
         if (!gameState.updating) return;       
         const canvas: HTMLCanvasElement = DrawCanvas.canvas;
         const ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
             canvas.getContext("2d")
         );
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 1;
         DrawCanvas.clearMap(gameState.background);
         const mapCanvas = DrawCanvas.mapGrid.getMapCanvas(
             DrawCanvas.canvas,
@@ -132,7 +125,7 @@ export default class DrawCanvas {
     }
 
 
-    static updateAnimation(time: number): void {
+    static updateAnimation(): void {
         let ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
             DrawCanvas.virtualCanvas.getContext("2d")
         );
@@ -142,10 +135,11 @@ export default class DrawCanvas {
             DrawCanvas.virtualCanvas.width,
             DrawCanvas.virtualCanvas.height
         );
-        const sizeCoef: number = 1;
+        const sizeCoef: number = 1;       
         DrawCanvas.animationSprites.forEach((sprite) => {
-            sprite.update(time);
+            sprite.update();
             // (sprite.width *= sizeCoef), (sprite.height *= sizeCoef);
+            
             if (
                 !(
                     sprite.x < DrawCanvas.virtualCanvas.width &&
@@ -159,7 +153,7 @@ export default class DrawCanvas {
                 }, 0);
                 return;
             }
-            const img: HTMLImageElement = sprite.img;          
+            const img: HTMLImageElement = sprite.img;         
             ctx.drawImage(
                 img,
                 sprite.sx,

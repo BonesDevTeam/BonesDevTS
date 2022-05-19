@@ -16,7 +16,6 @@ export default class AnimationSprite implements IAnimationSprite {
         img: HTMLImageElement,
         width: number,
         height: number,
-        startTime: number,
         startX: number,
         startY: number,
         frames: number = 1,
@@ -39,7 +38,7 @@ export default class AnimationSprite implements IAnimationSprite {
         return this._img;
     }
 
-    public update(time: number): void {
+    public update(): void {
         this._startTime++
         if (this.__framesElapsed < this.__framesHold-1) {
             this.__framesElapsed++;
@@ -55,10 +54,10 @@ export default class AnimationSprite implements IAnimationSprite {
         // this._startTime = time;
         this._x += this.getVelocity(this._startTime).x;
         this._y += this.getVelocity(this._startTime).y;
-        this.resize(this._startTime);
+        this.resize();
     }
 
-    public resize(time: number): void {}
+    public resize(): void {}
 
     public getVelocity(time:number): velocity {
         if (time<30){
