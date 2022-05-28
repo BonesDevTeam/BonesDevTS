@@ -1,0 +1,11 @@
+{
+  "full": {
+    "name": "full"
+  },
+  "half": {
+    "name": "half"
+  },
+  "zero": {
+    "name": "zero"
+  }
+}

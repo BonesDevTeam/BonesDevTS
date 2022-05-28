@@ -1,8 +1,6 @@
-export default interface ICharacter {
-    name: string;
-    skinName: string;
-    x: number;
-    y: number;
+import ICellConten from "../../GameState/Interfaces/ICellContent";
+
+export default interface ICharacter extends ICellConten {
+    hp: number
     movePoint: number;
-    hp: number;
 }

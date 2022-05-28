@@ -1,4 +1,4 @@
-import { SizedObject, XYObject } from "../../Global/Types.js";
+import { SizedObject, Skin, XYObject } from "../../Global/Types.js";
 import IGameState from "../../Model/GameState/Interfaces/IGameState.js";
 import ICachedImages from "../Interfaces/ICachedImages.js";
 import IMapGrid from "../Interfaces/IMapGrid.js";
@@ -92,29 +92,45 @@ export default class MapGrid implements IMapGrid {
             }
         }
 
-        for (let i = 0; i < nx; i++) {
-            for (let k = 0; k < ny; k++) {
-                const skins: string[] = this.__gameState.getCellSkins(i, k);
-                if (skins.length) {
-                    skins.forEach((skinName) => {
-                        const img: HTMLImageElement =
-                            cachedImages.getImage(skinName);
-                        ctx.drawImage(
-                            img,
-                            Math.floor(
-                                i * this.cellSize -
-                                    this.cellSize / 4 +
-                                    this.startPixel.x
-                            ),
-                            Math.floor(
-                                k * this.cellSize -
-                                    this.cellSize / 1.5 +
-                                    this.startPixel.y
-                            ),
-                            Math.floor(this.cellSize * 1.5),
-                            Math.floor(this.cellSize * 1.5)
-                        );
-                    });
+        for (let k = 0; k < ny; k++) {
+            for (let layerNumber = 0; layerNumber < 3; layerNumber++) {
+                for (let i = 0; i < nx; i++) {
+                    const skins: Skin[] = this.__gameState.getCellSkins(i, k)[
+                        layerNumber
+                    ];
+                    if (skins.length) {
+                        skins.forEach((skin) => {
+                            const img: HTMLImageElement = cachedImages.getImage(
+                                skin.name
+                            );
+                            let deltaX: number =
+                                0.5 * (skin.scale - 1) * this.cellSize;
+                            let deltaY: number =
+                                (skin.scale - 1) * this.cellSize;
+                            if (skin.aligin === "center") {
+                                deltaY += 0.5 * this.cellSize;
+                            }
+                            if (skin.aligin === "bottom25") {
+                                deltaY += 0.25 * this.cellSize;
+                            }
+
+                            ctx.drawImage(
+                                img,
+                                Math.floor(
+                                    i * this.cellSize +
+                                        this.startPixel.x -
+                                        deltaX
+                                ),
+                                Math.floor(
+                                    k * this.cellSize +
+                                        this.startPixel.y -
+                                        deltaY
+                                ),
+                                Math.floor(this.cellSize * skin.scale),
+                                Math.floor(this.cellSize * skin.scale)
+                            );
+                        });
+                    }
                 }
             }
         }

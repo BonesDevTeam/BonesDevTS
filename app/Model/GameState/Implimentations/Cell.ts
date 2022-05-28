@@ -1,5 +1,8 @@
+import { Skin } from "../../../Global/Types.js";
 import ICharacter from "../../Characters/Interfaces/ICharacter.js";
+import IStatic from "../../Statics/Interfaces/IStatic.js";
 import ICell from "../Interfaces/ICell.js";
+import ICellConten from "../Interfaces/ICellContent.js";
 
 export default class Cell implements ICell {
     private __x: number;
@@ -28,11 +31,23 @@ export default class Cell implements ICell {
     set character(character: ICharacter | null) {
         this.__character = character;
     }
-    get skinsName(): string[] {
-        const skins: string[] = this.__content.map((s) => s.skinName);
+    get layers(): Array<Array<Skin>> {
+        const layers: Array<Array<Skin>> = [[], [], []];
+        const skins: Skin[] = this.__content.map((s) => {
+            return { name: s.skinName, scale: s.size, aligin: s.aligin };
+        });
+        layers[0] = skins;
         if (this.__character) {
-            skins.push(this.__character.skinName);
+            layers[1].push({
+                name: this.__character.skinName,
+                scale: this.__character.size,
+                aligin: this.__character.aligin,
+            });
         }
-        return skins;
+        return layers;
+    }
+
+    public addContent(s: ICellConten): void {
+        this.__content.push(s);
     }
 }

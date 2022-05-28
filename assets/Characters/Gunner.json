@@ -1,6 +1,8 @@
 {
   "className": "Player",
   "name": "Gunner",
+  "size": 1.5,
+  "aligin": "bottom25",
   "movementPointsValues": {
     "min": 12,
     "max": 18
@@ -12,10 +14,10 @@
     "legs": 2
   },
   "defListInit": {
-    "head": 1,
-    "body": 3,
-    "arms": 2,
-    "legs": 2
+    "head": 0,
+    "body": 0,
+    "arms": 0,
+    "legs": 0
   },
   "initInventory": [
     "RazeGun"

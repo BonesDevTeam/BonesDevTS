@@ -13,4 +13,6 @@ export default interface ICharacterJson {
     lives: number;
     cooldownKey: number;
     maxCooldownKey: number;
+    size: number;
+    aligin: string;
 }

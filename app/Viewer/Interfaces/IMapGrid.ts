@@ -8,9 +8,9 @@ export default interface IMapGrid {
     finishPixel: XYObject;
     cellSize: number;
     cellToShowCount: XYObject;
-    getMapCanvas: (
+    getMapCanvas(
         canvasSize: SizedObject,
         cachedImages: ICachedImages
-    ) => HTMLCanvasElement;
-    getCell: (xCoord: number, yCoord: number) => XYObject;
+    ): HTMLCanvasElement;
+    getCell(xCoord: number, yCoord: number): XYObject;
 }
