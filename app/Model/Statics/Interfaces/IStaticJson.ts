@@ -1,9 +1,10 @@
+import { Skin } from "../../../Global/Types";
+
 export default interface IStaticJson {
     name: string;
     className: string;
-    defaultSkin: string;
-    size: number;
+    defaultSkinName: string;
     initHp: number;
     additionalPoints: number;
-    aligin: string;
+    skin: {[name:string]: Skin}
 }

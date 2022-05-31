@@ -1,5 +1,5 @@
-import ICellConten from "../../GameState/Interfaces/ICellContent";
+import ICellContent from "../../GameState/Interfaces/ICellContent";
 
-export default interface IStatic extends ICellConten {
-
+export default interface IStatic extends ICellContent {
+    skinName: string
 }

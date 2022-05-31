@@ -1,3 +1,5 @@
+import { Skin } from "../../../Global/Types";
+
 type BodyParts = { head: number; body: number; arms: number; legs: number };
 
 export default interface ICharacterJson {
@@ -13,6 +15,5 @@ export default interface ICharacterJson {
     lives: number;
     cooldownKey: number;
     maxCooldownKey: number;
-    size: number;
-    aligin: string;
+    skin: Skin;
 }

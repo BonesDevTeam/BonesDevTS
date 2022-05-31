@@ -1,6 +1,7 @@
 {
   "full": {
-    "name": "full"
+    "name": "full",
+    "scale": 1.15
   },
   "half": {
     "name": "half"

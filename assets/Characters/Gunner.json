@@ -2,7 +2,14 @@
   "className": "Player",
   "name": "Gunner",
   "size": 1.5,
-  "aligin": "bottom25",
+  "align": "bottom25",
+  "skin": {
+    "name": "Gunner",
+    "scale": 1.5,
+    "align": "bottom25",
+    "frames": 1,
+    "framesHold": 1
+  },
   "movementPointsValues": {
     "min": 12,
     "max": 18

@@ -1,7 +1,11 @@
 import { SizedObject, Skin, XYObject } from "../../Global/Types.js";
 import IGameState from "../../Model/GameState/Interfaces/IGameState.js";
+import IAnimationContent from "../Interfaces/IAnimationContent.js";
+import IAnimationSprite from "../Interfaces/IAnimationSprite.js";
 import ICachedImages from "../Interfaces/ICachedImages.js";
 import IMapGrid from "../Interfaces/IMapGrid.js";
+import AnimationContent from "./AnimationContent.js";
+import AnimationSprite from "./AnimationSprite.js";
 
 export default class MapGrid implements IMapGrid {
     public srartCell: XYObject;
@@ -10,6 +14,10 @@ export default class MapGrid implements IMapGrid {
     public cellSize: number;
     public cellToShowCount: XYObject;
     private __gameState: IGameState;
+    private __grid: HTMLCanvasElement;
+    private __virtualCanvas: HTMLCanvasElement;
+    private __canvasSize: SizedObject;
+    private __animationSprites: { [id: string]: IAnimationContent };
     public constructor(
         gameState: IGameState,
         srartCell: XYObject,
@@ -22,6 +30,7 @@ export default class MapGrid implements IMapGrid {
         this.srartCell = srartCell;
         this.startPixel = startPixel;
         this.finishPixel = finishPixel;
+        this.__canvasSize = canvasSize;
         this.cellSize = Math.min(
             Math.floor(
                 (this.finishPixel.x - this.startPixel.x) / cellToShowCount.x
@@ -31,6 +40,11 @@ export default class MapGrid implements IMapGrid {
             )
         );
         this.cellToShowCount = cellToShowCount;
+        this.__grid = this.__createGrid(canvasSize);
+        this.__virtualCanvas = document.createElement("canvas");
+        this.__virtualCanvas.height = canvasSize.height;
+        this.__virtualCanvas.width = canvasSize.width;
+        this.__animationSprites = {};
     }
     public getCell(xCoord: number, yCoord: number): XYObject {
         const deltax: number = xCoord - this.startPixel.x;
@@ -41,10 +55,7 @@ export default class MapGrid implements IMapGrid {
         };
     }
 
-    public getMapCanvas(
-        canvasSize: SizedObject,
-        cachedImages: ICachedImages
-    ): HTMLCanvasElement {
+    private __createGrid(canvasSize: SizedObject): HTMLCanvasElement {
         function drawStrockedRect(
             x: number,
             y: number,
@@ -91,50 +102,115 @@ export default class MapGrid implements IMapGrid {
                 );
             }
         }
+        return canvas;
+    }
 
-        for (let k = 0; k < ny; k++) {
-            for (let layerNumber = 0; layerNumber < 3; layerNumber++) {
-                for (let i = 0; i < nx; i++) {
-                    const skins: Skin[] = this.__gameState.getCellSkins(i, k)[
-                        layerNumber
-                    ];
-                    if (skins.length) {
-                        skins.forEach((skin) => {
+    public getGrid(canvasSize: SizedObject): HTMLCanvasElement {
+        if (
+            canvasSize.height !== this.__canvasSize.height ||
+            canvasSize.width !== this.__canvasSize.width
+        ) {
+            this.__grid = this.__createGrid(canvasSize);
+            this.__virtualCanvas.height = canvasSize.height;
+            this.__virtualCanvas.width = canvasSize.width;
+        }
+        return this.__grid;
+    }
+
+    public getContenet(cachedImages: ICachedImages): HTMLCanvasElement {
+        if (this.__gameState.updating) {
+            let ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
+                this.__virtualCanvas.getContext("2d")
+            );
+            ctx.clearRect(
+                0,
+                0,
+                this.__virtualCanvas.width,
+                this.__virtualCanvas.height
+            );
+            const { x: nx, y: ny } = this.cellToShowCount;
+            for (let k = 0; k < ny; k++) {
+                for (let layerNumber = 0; layerNumber < 3; layerNumber++) {
+                    for (let i = 0; i < nx; i++) {
+                        const skins: { [id: string]: Skin } =
+                            this.__gameState.getCellSkins(i, k)[layerNumber];
+                        Object.keys(skins).forEach((id) => {
+                            let skin = skins[id];
                             const img: HTMLImageElement = cachedImages.getImage(
                                 skin.name
                             );
+                            let scale: number = skin.scale || 1;
                             let deltaX: number =
-                                0.5 * (skin.scale - 1) * this.cellSize;
-                            let deltaY: number =
-                                (skin.scale - 1) * this.cellSize;
-                            if (skin.aligin === "center") {
+                                0.5 * (scale - 1) * this.cellSize;
+                            let deltaY: number = (scale - 1) * this.cellSize;
+                            if (skin.align === "center") {
                                 deltaY += 0.5 * this.cellSize;
                             }
-                            if (skin.aligin === "bottom25") {
+                            if (skin.align === "bottom25") {
                                 deltaY += 0.25 * this.cellSize;
                             }
-
-                            ctx.drawImage(
-                                img,
-                                Math.floor(
-                                    i * this.cellSize +
-                                        this.startPixel.x -
-                                        deltaX
-                                ),
-                                Math.floor(
-                                    k * this.cellSize +
-                                        this.startPixel.y -
-                                        deltaY
-                                ),
-                                Math.floor(this.cellSize * skin.scale),
-                                Math.floor(this.cellSize * skin.scale)
+                            let x: number = Math.floor(
+                                i * this.cellSize + this.startPixel.x - deltaX
+                            );
+                            let y: number = Math.floor(
+                                k * this.cellSize + this.startPixel.y - deltaY
+                            );
+                            this.__addAnimationSprite(
+                                new AnimationContent(
+                                    img,
+                                    Math.floor(this.cellSize * scale),
+                                    Math.floor(this.cellSize * scale),
+                                    x,
+                                    y,
+                                    skin.frames,
+                                    skin.framesHold,
+                                    id
+                                )
                             );
                         });
                     }
                 }
             }
+            this.__gameState.updating = false;
         }
-        this.__gameState.updating = false;
-        return canvas;
+        this.__updateAnimation();
+        return this.__virtualCanvas;
+    }
+
+    private __updateAnimation(): void {
+        let ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
+            this.__virtualCanvas.getContext("2d")
+        );
+        ctx.clearRect(
+            0,
+            0,
+            this.__virtualCanvas.width,
+            this.__virtualCanvas.height
+        );
+        Object.keys(this.__animationSprites).forEach((key) => {
+            let sprite: IAnimationContent = this.__animationSprites[key];
+            sprite.update();
+            const img: HTMLImageElement = sprite.img;
+            ctx.drawImage(
+                img,
+                sprite.sx,
+                sprite.sy,
+                sprite.swidth,
+                sprite.sheight,
+                sprite.x,
+                sprite.y,
+                sprite.width,
+                sprite.height
+            );
+        });
+    }
+
+    private __addAnimationSprite(sprite: IAnimationContent): void {
+        if (!this.__animationSprites[sprite.id])
+            this.__animationSprites[sprite.id] = sprite;
+    }
+
+    private __deleteAnimationSpriteById(id: string): void {
+        delete this.__animationSprites[id];
     }
 }

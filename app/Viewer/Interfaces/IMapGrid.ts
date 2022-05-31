@@ -1,5 +1,5 @@
 import { SizedObject, XYObject } from "../../Global/Types";
-import CachedImages from "../Implimentations/CachedImages";
+import IAnimationSprite from "./IAnimationSprite";
 import ICachedImages from "./ICachedImages";
 
 export default interface IMapGrid {
@@ -8,9 +8,7 @@ export default interface IMapGrid {
     finishPixel: XYObject;
     cellSize: number;
     cellToShowCount: XYObject;
-    getMapCanvas(
-        canvasSize: SizedObject,
-        cachedImages: ICachedImages
-    ): HTMLCanvasElement;
+    getGrid(canvasSize: SizedObject): HTMLCanvasElement;
+    getContenet(cachedImages: ICachedImages): HTMLCanvasElement;
     getCell(xCoord: number, yCoord: number): XYObject;
 }

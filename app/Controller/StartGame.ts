@@ -1,17 +1,18 @@
+import ISave from "./Interfaces/ISave";
+import ICharacter from "../Model/Characters/Interfaces/ICharacter";
+import ICharacterGame from "../Model/Characters/Interfaces/ICharacterGame";
+import ICharacterJson from "../Model/Characters/Interfaces/ICharacterJson";
+import IGameState from "../Model/GameState/Interfaces/IGameState";
+import IStatic from "../Model/Statics/Interfaces/IStatic";
+import IStaticJson from "../Model/Statics/Interfaces/IStaticJson";
+import ICachedImages from "../Viewer/Interfaces/ICachedImages";
+import ISkinJson from "../Viewer/Interfaces/ISkinJson";
+
 import FileManager from "../Global/FileManager.js";
 import asyncForEach from "../Global/Functions.js";
 import Character from "../Model/Characters/Implimentations/Character.js";
-import ICharacter from "../Model/Characters/Interfaces/ICharacter.js";
-import ICharacterGame from "../Model/Characters/Interfaces/ICharacterGame.js";
-import ICharacterJson from "../Model/Characters/Interfaces/ICharacterJson.js";
 import GameState from "../Model/GameState/Implimentations/GameState.js";
-import IGameState from "../Model/GameState/Interfaces/IGameState.js";
-import IStatic from "../Model/Statics/Interfaces/IStatic.js";
-import IStaticJson from "../Model/Statics/Interfaces/IStaticJson.js";
-import ICachedImages from "../Viewer/Interfaces/ICachedImages.js";
-import ISkinJson from "../Viewer/Interfaces/ISkinJson.js";
 import StaticFactory from "./Implimentations/StaticFactory.js";
-import ISave from "./Interfaces/ISave.js";
 
 export default class StartGame {
     static async start(
@@ -55,6 +56,9 @@ export default class StartGame {
             const staticBase: IStaticJson = await FileManager.get(
                 `../../assets/Statics/${s.name}.json`
             );
+            staticBase.skin = await FileManager.get(
+                `../../assets/Statics/Skins/${staticBase.name}.json`
+            );
             let staticGame: IStatic = <IStatic>(
                 StaticFactory.createStatic(s, staticBase)
             );
@@ -64,8 +68,8 @@ export default class StartGame {
 
             for (let skinName in skins) {
                 await cachedImages.addImage(
-                    staticGame.skinName,
-                    `Statics/images/${staticBase.name}/${skinName}.png`
+                    staticGame.skin.name,
+                    `Statics/images/${staticBase.name}/${skins[skinName].name}.png`
                 );
             }
             gameState.addContent(staticGame);
@@ -90,10 +94,9 @@ export default class StartGame {
                 const skin: ISkinJson = await FileManager.get(
                     `../../assets/Characters/Skins/${playerBase.className}.json`
                 );
-                const skinName: string =
-                    skin[playerBase.name][player.skinName].name;
+                const skinName: string = skin[playerBase.name].name;
                 await cachedImages.addImage(
-                    playerGame.skinName,
+                    playerGame.skin.name,
                     `Characters/images/${playerBase.className}/${skinName}.png`
                 );
                 gameState.moveCharacter(playerGame, player.x, player.y);

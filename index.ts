@@ -18,7 +18,7 @@ window.addEventListener("load", async () => {
     )}')`;
     DrawCanvas.init(gameState, cachedImages);
     window.requestAnimationFrame(
-        DrawCanvas.upddateCanvas.bind(
+        DrawCanvas.updateCanvas.bind(
             null,
             gameState,
             gameState.cellsCount.x,

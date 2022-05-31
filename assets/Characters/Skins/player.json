@@ -1,7 +1,9 @@
 {
   "Gunner": {
-    "full": {
-      "name": "gunnerDefault"
-    }
+    "name": "GunnerDefault",
+    "scale": 1.5,
+    "align": "bottom25",
+    "frames": 1,
+    "framesHold": 1
   }
 }

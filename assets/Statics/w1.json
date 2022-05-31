@@ -1,8 +1,7 @@
 {
   "name": "w1",
   "className": "Wall",
-  "defaultSkin": "full",
   "initHp": 11,
   "additionalPoints": 1,
-  "size":1.15
+  "defaultSkinName": "full"
 }

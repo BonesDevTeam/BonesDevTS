@@ -1,23 +1,22 @@
 import IAnimationSprite from "../Interfaces/IAnimationSprite";
-type velocity = { x: number; y: number };
+
 export default class AnimationSprite implements IAnimationSprite {
-    private _img: HTMLImageElement;
-    private _width: number;
-    private _height: number;
-    private _startTime: number;
-    private _x: number;
-    private _y: number;
-    private __velocity: velocity;
-    private __frames: number;
-    private __framesCurrent: number;
-    private __framesHold: number;
-    private __framesElapsed: number;
+    protected _img: HTMLImageElement;
+    protected _width: number;
+    protected _height: number;
+    protected _startTime: number;
+    protected _x: number;
+    protected _y: number;
+    protected _frames: number;
+    protected _framesCurrent: number;
+    protected _framesHold: number;
+    protected _framesElapsed: number;
     public constructor(
         img: HTMLImageElement,
         width: number,
         height: number,
-        startX: number,
-        startY: number,
+        x: number,
+        y: number,
         frames: number = 1,
         framesHold: number = 1
     ) {
@@ -25,13 +24,12 @@ export default class AnimationSprite implements IAnimationSprite {
         this._width = width;
         this._height = height;
         this._startTime = 0;
-        this._x = startX;
-        this._y = startY;
-        this.__velocity = { x: 0.2, y: 0 };
-        this.__frames = frames;
-        this.__framesHold = framesHold;
-        this.__framesCurrent = 0;
-        this.__framesElapsed = 0;
+        this._x = x;
+        this._y = y;
+        this._frames = frames;
+        this._framesHold = framesHold;
+        this._framesCurrent = 0;
+        this._framesElapsed = 0;
     }
 
     public get img(): HTMLImageElement {
@@ -39,45 +37,17 @@ export default class AnimationSprite implements IAnimationSprite {
     }
 
     public update(): void {
-        this._startTime++
-        if (this.__framesElapsed < this.__framesHold-1) {
-            this.__framesElapsed++;
+        this._startTime++;
+        if (this._framesElapsed < this._framesHold - 1) {
+            this._framesElapsed++;
         } else {
-            this.__framesElapsed = 0;
-            if (this.__framesCurrent < this.__frames - 1) {
-                this.__framesCurrent++;
+            this._framesElapsed = 0;
+            if (this._framesCurrent < this._frames - 1) {
+                this._framesCurrent++;
             } else {
-                this.__framesCurrent = 0;
+                this._framesCurrent = 0;
             }
         }
-
-        // this._startTime = time;
-        this._x += this.getVelocity(this._startTime).x;
-        this._y += this.getVelocity(this._startTime).y;
-        this.resize();
-    }
-
-    public resize(): void {}
-
-    public getVelocity(time:number): velocity {
-        if (time<30){
-            this.__velocity = {
-                x: 15,
-                y: -10
-            };
-        }
-        else {
-            this.__velocity = {
-                x: 15,
-                y: 10
-            };
-        }
-
-        this.__velocity = {
-            x: 10,
-            y: (-10+ 0.0025*time**2),
-        };
-        return this.__velocity;
     }
 
     public get x(): number {
@@ -105,15 +75,15 @@ export default class AnimationSprite implements IAnimationSprite {
     }
 
     public get sx(): number {
-        return this.swidth * this.__framesCurrent;
+        return this.swidth * this._framesCurrent;
     }
 
     public get sy(): number {
         return 0;
     }
 
-    public get swidth(): number {       
-        return this._img.width / this.__frames;
+    public get swidth(): number {
+        return this._img.width / this._frames;
     }
 
     public get sheight(): number {

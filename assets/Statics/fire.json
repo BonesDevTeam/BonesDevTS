@@ -1,0 +1,8 @@
+{
+  "name": "fire",
+  "className": "Fire",
+  "defaultSkinName": "big",
+  "initHp": 0,
+  "state": "big",
+  "additionalPoints": 3
+}

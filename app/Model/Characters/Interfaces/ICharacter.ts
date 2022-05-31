@@ -1,6 +1,6 @@
-import ICellConten from "../../GameState/Interfaces/ICellContent";
+import ICellContent from "../../GameState/Interfaces/ICellContent";
 
-export default interface ICharacter extends ICellConten {
+export default interface ICharacter extends ICellContent {
     hp: number
     movePoint: number;
 }

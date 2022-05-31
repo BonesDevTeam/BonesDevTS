@@ -1,14 +1,13 @@
-import { Skin } from "../../../Global/Types.js";
-import ICharacter from "../../Characters/Interfaces/ICharacter.js";
-import IStatic from "../../Statics/Interfaces/IStatic.js";
-import ICell from "../Interfaces/ICell.js";
-import ICellConten from "../Interfaces/ICellContent.js";
+import { Skin } from "../../../Global/Types";
+import ICharacter from "../../Characters/Interfaces/ICharacter";
+import ICell from "../Interfaces/ICell";
+import ICellContent from "../Interfaces/ICellContent";
 
 export default class Cell implements ICell {
     private __x: number;
     private __y: number;
     private __character: ICharacter | null;
-    private __content: ICellConten[];
+    private __content: ICellContent[];
     constructor(x: number, y: number) {
         this.__x = x;
         this.__y = y;
@@ -31,23 +30,18 @@ export default class Cell implements ICell {
     set character(character: ICharacter | null) {
         this.__character = character;
     }
-    get layers(): Array<Array<Skin>> {
-        const layers: Array<Array<Skin>> = [[], [], []];
-        const skins: Skin[] = this.__content.map((s) => {
-            return { name: s.skinName, scale: s.size, aligin: s.aligin };
+    get layers(): Array<{[id:string]:Skin}> {
+        const layers: Array<{[id:string]:Skin}> = [{}, {}, {}]
+        this.__content.forEach((s) => {
+            layers[0][s.id] = s.skin
         });
-        layers[0] = skins;
         if (this.__character) {
-            layers[1].push({
-                name: this.__character.skinName,
-                scale: this.__character.size,
-                aligin: this.__character.aligin,
-            });
+            layers[1][this.__character.id]= this.__character.skin
         }
         return layers;
     }
 
-    public addContent(s: ICellConten): void {
+    public addContent(s: ICellContent): void {
         this.__content.push(s);
     }
 }

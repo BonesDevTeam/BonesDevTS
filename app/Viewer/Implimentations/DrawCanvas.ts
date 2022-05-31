@@ -2,11 +2,12 @@ import IGameState from "../../Model/GameState/Interfaces/IGameState.js";
 import IAnimationSprite from "../Interfaces/IAnimationSprite.js";
 import ICachedImages from "../Interfaces/ICachedImages.js";
 import IMapGrid from "../Interfaces/IMapGrid.js";
-import AnimationSprite from "./AnimationSprite.js";
 import MapGrid from "./MapGrid.js";
+import MoveableSprite from "./MoveableSprite.js";
 
 export default class DrawCanvas {
     private static animationSprites: IAnimationSprite[] = [];
+    private static statics: IAnimationSprite[] = [];
     private static canvas: HTMLCanvasElement;
     private static canvasAnimation: HTMLCanvasElement;
     private static virtualCanvas: HTMLCanvasElement =
@@ -28,7 +29,7 @@ export default class DrawCanvas {
         );
         const canvas: HTMLCanvasElement = DrawCanvas.canvas;
         DrawCanvas.div = <HTMLDivElement>DrawCanvas.canvas.closest("div");
-        DrawCanvas.__uddateCanvasSizes(gameState);
+        DrawCanvas.__updateCanvasSizes(gameState);
         DrawCanvas.mapGrid = new MapGrid(
             gameState,
             { x: 0, y: 0 },
@@ -48,42 +49,48 @@ export default class DrawCanvas {
             //         e.offsetYS
             //     )
             // );
-           
+
             DrawCanvas.addAnimationSprite(
-                new AnimationSprite(
-                    cachedImages.getImage("RumFlip"), 200,200, e.offsetX, e.offsetY, 7, 4
+                new MoveableSprite(
+                    cachedImages.getImage("RumFlip"),
+                    200,
+                    200,
+                    e.offsetX,
+                    e.offsetY,
+                    7,
+                    4
                 )
             );
         }
         canvas.addEventListener("click", click);
     }
 
-    private static __uddateCanvasSizes(gameState: IGameState): void {
+    private static __updateCanvasSizes(gameState: IGameState): void {
         const div: HTMLDivElement = DrawCanvas.div;
         if (
             div.clientWidth !== DrawCanvas.canvas.width ||
             DrawCanvas.canvas.height !== div.clientHeight
         ) {
             DrawCanvas.canvas.width = div.clientWidth;
-            DrawCanvas.canvasAnimation.width = div.clientWidth;
-            DrawCanvas.virtualCanvas.width = div.clientWidth;
             DrawCanvas.canvas.height = div.clientHeight;
+            DrawCanvas.canvasAnimation.width = div.clientWidth;
             DrawCanvas.canvasAnimation.height = div.clientHeight;
+            DrawCanvas.virtualCanvas.width = div.clientWidth;
             DrawCanvas.virtualCanvas.height = div.clientHeight;
             gameState.updating = true;
         }
     }
 
-    public static upddateCanvas(
+    public static updateCanvas(
         gameState: IGameState,
         nx: number,
-        ny: number,
+        ny: number
     ): void {
-        DrawCanvas.__uddateCanvasSizes(gameState);
-        DrawCanvas.upddateMap(gameState, nx, ny);
-        DrawCanvas.updateAnimation()
+        DrawCanvas.__updateCanvasSizes(gameState);
+        DrawCanvas.updateMap(gameState, nx, ny);
+        DrawCanvas.updateAnimation();
         window.requestAnimationFrame(
-            DrawCanvas.upddateCanvas.bind(null, gameState, nx, ny)
+            DrawCanvas.updateCanvas.bind(null, gameState, nx, ny)
         );
     }
 
@@ -106,24 +113,25 @@ export default class DrawCanvas {
         // }
     }
 
-    private static upddateMap(
+    private static updateMap(
         gameState: IGameState,
         nx: number,
         ny: number
     ): void {
-        if (!gameState.updating) return;       
         const canvas: HTMLCanvasElement = DrawCanvas.canvas;
         const ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
             canvas.getContext("2d")
         );
         DrawCanvas.clearMap(gameState.background);
-        const mapCanvas = DrawCanvas.mapGrid.getMapCanvas(
-            DrawCanvas.canvas,
-            DrawCanvas.cachedImages
+        const grid: HTMLCanvasElement = DrawCanvas.mapGrid.getGrid(
+            DrawCanvas.canvas
         );
-        ctx.drawImage(mapCanvas, 0, 0);
+        const content: HTMLCanvasElement = DrawCanvas.mapGrid.getContenet(
+            this.cachedImages
+        );
+        ctx.drawImage(grid, 0, 0);
+        ctx.drawImage(content, 0, 0);
     }
-
 
     static updateAnimation(): void {
         let ctx: CanvasRenderingContext2D = <CanvasRenderingContext2D>(
@@ -135,11 +143,8 @@ export default class DrawCanvas {
             DrawCanvas.virtualCanvas.width,
             DrawCanvas.virtualCanvas.height
         );
-        const sizeCoef: number = 1;       
         DrawCanvas.animationSprites.forEach((sprite) => {
             sprite.update();
-            // (sprite.width *= sizeCoef), (sprite.height *= sizeCoef);
-            
             if (
                 !(
                     sprite.x < DrawCanvas.virtualCanvas.width &&
@@ -153,7 +158,7 @@ export default class DrawCanvas {
                 }, 0);
                 return;
             }
-            const img: HTMLImageElement = sprite.img;         
+            const img: HTMLImageElement = sprite.img;
             ctx.drawImage(
                 img,
                 sprite.sx,
@@ -165,18 +170,6 @@ export default class DrawCanvas {
                 sprite.width,
                 sprite.height
             );
-            // ctx.drawImage(
-            //     img,
-            //     0,
-            //     0,
-            //     200,
-            //     400,
-            //     sprite.x,
-            //     sprite.y,
-            //     100,
-            //     100
-            // );
-            // ctx.drawImage(img, sprite.x, sprite.y, sprite.width, sprite.height);
         });
         ctx = <CanvasRenderingContext2D>(
             DrawCanvas.canvasAnimation.getContext("2d")

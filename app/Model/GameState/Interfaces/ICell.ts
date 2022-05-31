@@ -1,10 +1,10 @@
 import { Skin } from "../../../Global/Types";
 import ICharacter from "../../Characters/Interfaces/ICharacter";
-import ICellConten from "./ICellContent";
+import ICellContent from "./ICellContent";
 
 export default interface ICell {
     readonly id: string;
     character: ICharacter | null;
-    readonly layers: Array<Array<Skin>>;
-    addContent(s: ICellConten): void
+    readonly layers: Array<{ [id: string]: Skin }>;
+    addContent(s: ICellContent): void;
 }

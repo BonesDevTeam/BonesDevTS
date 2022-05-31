@@ -1,3 +1,5 @@
+import { Skin } from "../../Global/Types";
+
 export default interface ISkinJson {
-    [name: string]: { [skinName: string]: { name: string } };
+    [name: string]: Skin;
 }

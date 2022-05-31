@@ -1,0 +1,8 @@
+{
+  "big": {
+    "name": "big",
+    "frames": 10,
+    "framesHold": 2.5,
+    "scale": 1.5
+  }
+}

@@ -1,27 +1,41 @@
+import { Skin } from "../../../Global/Types";
+import ISkinJson from "../../../Viewer/Interfaces/ISkinJson";
 import IStatic from "../Interfaces/IStatic";
 import IStaticJson from "../Interfaces/IStaticJson";
 
 export default abstract class Static implements IStatic {
-    protected _name: string
+    protected _name: string;
     protected _x: number;
     protected _y: number;
-    protected _skinName: string;
-    protected _size: number
-    public aligin: string;
+    // protected _skinName: string;
+    // protected _size: number
+    // public align: string;
+    public readonly id: string;
+    // public skin: Skin;
+    public skinName: string;
+    protected _defaultSettings: IStaticJson;
 
-    protected constructor(props: IStatic, defaultSettings: IStaticJson) {
+    protected constructor(
+        props: IStatic,
+        defaultSettings: IStaticJson,
+        id: string
+    ) {
         this._x = props.x;
         this._y = props.y;
-        this._skinName = props.skinName || defaultSettings.defaultSkin
-        this._name = props.name
-        this._size = defaultSettings.size
-        this.aligin = defaultSettings.aligin
+        // this._skinName = props.skinName || defaultSettings.defaultSkin
+        this._name = props.name;
+
+        this.id = id;
+        this.skinName = props.skinName || defaultSettings.defaultSkinName;
+        this._defaultSettings = defaultSettings;
     }
 
-    public abstract get skinName(): string;
+    public get skin(): Skin {
+        return this._defaultSettings.skin[this.skinName];
+    }
 
-    public get name():string {
-        return this._name
+    public get name(): string {
+        return this._name;
     }
 
     public get x(): number {
@@ -38,9 +52,5 @@ export default abstract class Static implements IStatic {
 
     public set y(y: number) {
         this._y = y;
-    }
-
-    public get size(): number {
-        return this._size
     }
 }

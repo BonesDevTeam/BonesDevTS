@@ -1,7 +1,7 @@
 import { Skin, XYObject } from "../../../Global/Types.js";
 import ICharacterGame from "../../Characters/Interfaces/ICharacterGame.js";
 import ICell from "../Interfaces/ICell.js";
-import ICellConten from "../Interfaces/ICellContent.js";
+import ICellContent from "../Interfaces/ICellContent.js";
 import IGameState from "../Interfaces/IGameState.js";
 import Cell from "./Cell.js";
 
@@ -37,7 +37,7 @@ export default class GameState implements IGameState {
         }
     }
 
-    public getCellSkins(x: number, y: number): Array<Array<Skin>> {
+    public getCellSkins(x: number, y: number): Array<{[id:string]:Skin}> {
         const id: string = Cell.tranformCoordinatesToId(x, y);
         return this.__cells[id].layers;
     }
@@ -63,7 +63,7 @@ export default class GameState implements IGameState {
         };
     }
 
-    public addContent(s: ICellConten): void {
+    public addContent(s: ICellContent): void {
         const id: string = Cell.tranformCoordinatesToId(s.x, s.y);
         this.__cells[id].addContent(s);
     }
